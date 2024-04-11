@@ -23,18 +23,30 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
+	@Operation(summary = "Buscar todos os produtos")
+   	@ApiResponse(responseCode = "200", description = "Status 200 OK") 
 	@GetMapping
 	public ResponseEntity<List<ProductDTO>> findAll() {
 		List<ProductDTO> list = productService.findAll();
 		return ResponseEntity.ok(list);
 	}
 	
+    @Operation(summary = "Buscar produto pelo ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Status 200 OK"),
+        @ApiResponse(responseCode = "400", description = "Status 403 Forbidden"),
+    })
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         ProductDTO dto = productService.findById(id);
         return ResponseEntity.ok(dto);
     }
 	
+    @Operation(summary = "Inserir um novo produto")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Status 200 OK"),
+        @ApiResponse(responseCode = "401", description = "Status 401 Unauthorized"),
+    })
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
         dto = productService.insert(dto);
