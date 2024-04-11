@@ -17,10 +17,14 @@ import com.devsuperior.demo.dto.RegisterDTO;
 import com.devsuperior.demo.entities.User;
 import com.devsuperior.demo.repositories.UserRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação", description = "Gerenciar acesso de usuários")
 public class AuthenticationController {
     
     @Autowired
@@ -29,7 +33,9 @@ public class AuthenticationController {
     private UserRepository repository;
     @Autowired
     private TokenService tokenService;
-
+    
+    @Operation(summary = "Fazer login de usuário")
+    @ApiResponse(responseCode = "200", description = "Status 200 OK")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -40,6 +46,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
+    @Operation(summary = "Registrar um novo usuário")
+    @ApiResponse(responseCode = "200", description = "Status 200 OK")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data){
         if (this.repository.findByEmail(data.email()) != null) {
