@@ -16,15 +16,25 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.devsuperior.demo.dto.ProductDTO;
 import com.devsuperior.demo.services.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(value = "/products")
+@Tag(name = "Produtos", description = "Gerenciar Produtos")
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
 
-	@Operation(summary = "Buscar todos os produtos")
-   	@ApiResponse(responseCode = "200", description = "Status 200 OK") 
+    @Operation(summary = "Buscar todos os produtos")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "Forbidden", content = @Content()),
+    })
 	@GetMapping
 	public ResponseEntity<List<ProductDTO>> findAll() {
 		List<ProductDTO> list = productService.findAll();
@@ -33,8 +43,8 @@ public class ProductController {
 	
     @Operation(summary = "Buscar produto pelo ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Status 200 OK"),
-        @ApiResponse(responseCode = "400", description = "Status 403 Forbidden"),
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "Forbidden", content = @Content()),
     })
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
@@ -44,8 +54,9 @@ public class ProductController {
 	
     @Operation(summary = "Inserir um novo produto")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Status 200 OK"),
-        @ApiResponse(responseCode = "401", description = "Status 401 Unauthorized"),
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content()),
+        @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content())
     })
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO dto) {
