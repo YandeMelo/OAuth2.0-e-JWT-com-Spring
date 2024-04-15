@@ -18,7 +18,9 @@ import com.devsuperior.demo.entities.User;
 import com.devsuperior.demo.repositories.UserRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -35,7 +37,10 @@ public class AuthenticationController {
     private TokenService tokenService;
     
     @Operation(summary = "Fazer login de usuário")
-    @ApiResponse(responseCode = "200", description = "Status 200 OK")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content())
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -47,7 +52,10 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Registrar um novo usuário")
-    @ApiResponse(responseCode = "200", description = "Status 200 OK")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content())
+    })
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data){
         if (this.repository.findByEmail(data.email()) != null) {
