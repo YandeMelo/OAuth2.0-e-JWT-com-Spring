@@ -3,8 +3,10 @@ package com.devsuperior.demo.config;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
@@ -25,6 +27,7 @@ public class TokenService {
             String token = JWT.create()
                 .withIssuer("auth0")
                 .withSubject(user.getEmail())
+                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withExpiresAt(genExpirationDate())
                 .sign(algorithm);
             return token;
@@ -49,5 +52,4 @@ public class TokenService {
     private Instant genExpirationDate(){
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
-
 }
